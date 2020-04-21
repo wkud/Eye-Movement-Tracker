@@ -1,20 +1,24 @@
 import cv2 as cv
-import dlib
 from src.cameraHandler import CameraHandler
-from src.utils import markFace
+from src.screenHandler import ScreenHandler
+from src.faceDetector import FaceDetector
 
 camera = CameraHandler()
-detector = dlib.get_frontal_face_detector()
+faceDetector = FaceDetector()
+screen = ScreenHandler()
 
 while True:
-    ret, frame = camera.getFrame()
-    frameLR = cv.pyrDown(frame)
-    gray = camera.frameToGray(frameLR)
-    faces = detector(gray, 1)
-    markFace(frameLR, faces)
-    camera.displayFrame('Kamera', frameLR)
+    lowResFrame = camera.getLowResolutionFrame()
+
+    grayFrame = camera.frameToGray(lowResFrame)
+    faces = faceDetector.getFaces(grayFrame)
+
+    screen.markFace(lowResFrame, faces)
+    screen.displayFrame('Kamera', lowResFrame)
+
     key = cv.waitKey(1) & 0xFF
     if key == ord('q'):
         break
         
 camera.endRecording()
+screen.closeWindows()
