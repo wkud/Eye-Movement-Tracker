@@ -14,7 +14,7 @@ class ScreenHandler:
 
     def markFace(self, image, face):
         if face != None:
-            utils.markBoundingBoxOnImage(image, face, (0, 255, 0))
+            utils.markBoundingBoxOnImage(image, face, self.__faceMarkColor)
 
     def markEye(self, image, eye):
         if eye != None:

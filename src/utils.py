@@ -9,4 +9,4 @@ def rectToBoundingBox(rect):
 
 def markBoundingBoxOnImage(image, box, color):
     (x, y, w, h) = box
-    cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    cv.rectangle(image, (x, y), (x + w, y + h), color, 2)
