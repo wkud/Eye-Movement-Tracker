@@ -3,7 +3,8 @@ import src.utils as utils
 
 class ScreenHandler:
     def __init__(self):
-        pass
+        self.__faceMarkColor = (0, 255, 0)
+        self.__eyeMarkColor = (0, 255, 255)
 
     def displayFrame(self, title, frame):
         cv.imshow(title, frame)
@@ -11,7 +12,10 @@ class ScreenHandler:
     def closeWindows(self):
         cv.destroyAllWindows()
 
-    def markFace(self, image, faces):
-        if len(faces) > 0:
-            (x, y, w, h) = utils.rectToBoundedBox(faces[0])
-            cv.rectangle(image, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    def markFace(self, image, face):
+        if face != None:
+            utils.markBoundingBoxOnImage(image, face, self.__faceMarkColor)
+
+    def markEye(self, image, eye):
+        if eye != None:
+            utils.markBoundingBoxOnImage(image, eye, self.__eyeMarkColor)

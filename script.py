@@ -11,9 +11,9 @@ while True:
     lowResFrame = camera.getLowResolutionFrame()
 
     grayFrame = camera.frameToGray(lowResFrame)
-    faces = faceDetector.getFaces(grayFrame)
-
-    screen.markFace(lowResFrame, faces)
+    face = faceDetector.getFace(grayFrame)
+    if face != None:
+        screen.markFace(lowResFrame, face)
     screen.displayFrame('Kamera', lowResFrame)
 
     key = cv.waitKey(1) & 0xFF
