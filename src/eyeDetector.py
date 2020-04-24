@@ -2,7 +2,7 @@ import src.utils as utils
 
 class EyeDetector:
     def __init__(self):
-        self.__topOffsetProportion = .25
+        self.__topOffsetProportion = .20
         self.__sideOffsetProportion = .13
         self.__widthProportion = .30
         self.__heightProportion = .25

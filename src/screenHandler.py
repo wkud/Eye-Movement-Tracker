@@ -4,7 +4,7 @@ import src.utils as utils
 class ScreenHandler:
     def __init__(self):
         self.__faceMarkColor = (0, 255, 0)
-        self.__eyeMarkColor = (0, 0, 255)
+        self.__eyeMarkColor = (0, 255, 255)
 
     def displayFrame(self, title, frame):
         cv.imshow(title, frame)
