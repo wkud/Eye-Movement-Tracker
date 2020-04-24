@@ -13,9 +13,7 @@ class ScreenHandler:
         cv.destroyAllWindows()
 
     def markFace(self, image, face):
-        if face != None:
-            utils.markBoundingBoxOnImage(image, face, self.__faceMarkColor)
+        utils.markBoundingBoxOnImage(image, face, self.__faceMarkColor)
 
     def markEye(self, image, eye):
-        if eye != None:
-            utils.markBoundingBoxOnImage(image, eye, self.__eyeMarkColor)
+        utils.markBoundingBoxOnImage(image, eye, self.__eyeMarkColor)
