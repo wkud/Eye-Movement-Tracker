@@ -18,8 +18,10 @@ while True:
     if face != None:
         screen.markFace(lowResFrame, face)
 
-        eyes = eyesDetector.getEyes(grayFrame)
+        eyes = eyesDetector.getEyes(grayFrame, face)
         for eye in eyes:
+            eye[0] += face[0] # eyes coordinates (x, y) are relative to face origin (x,y)
+            eye[1] += face[1]
             screen.markEye(lowResFrame, eye)
 
     screen.displayFrame('Kamera', lowResFrame)
