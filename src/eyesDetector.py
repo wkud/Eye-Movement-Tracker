@@ -1,17 +1,18 @@
 import cv2 as cv
-import  src.utils as utils
+from math import floor
 
 class EyesDetector:
-    def __init__(self):
-        self.cascade = cv.CascadeClassifier('resources/haarcascade_eye.xml')
-
-    def getEyes(self, grayFrame, face):
+    def getEyes(self, face):
         (fx, fy, fw, fh) = face
-        upperHalfHeight = int(fh/2)
-        grayFace = utils.sliceImage(grayFrame, (fx, fy, fw, upperHalfHeight))
+        left_c = [int(floor(0.35 * fw)), int(floor(0.4 * fh))]
+        right_c = [int(floor(0.68 * fw)), int(floor(0.4 * fh))]
 
-        eyes = self.cascade.detectMultiScale(grayFace)
-        for eye in eyes: # eyes coordinates (x, y) are (while shouldn't be) relative to face origin (x,y)
-            eye[0] += fx
-            eye[1] += fy
-        return eyes
+        size = int(floor(0.10 * fw))
+
+        left_x, left_y = [left_c[0] - size, left_c[1] - size]
+        right_x, right_y = [right_c[0] - size, right_c[1] - size]
+        area = size * 2
+
+        left_eye = (fx + left_x, fy + left_y, area, area)
+        right_eye = (fx + right_x, fy + right_y, area, area)
+        return [left_eye, right_eye]
