@@ -1,5 +1,5 @@
 import cv2 as cv
-import src.utils as utils
+from src.utils import markFaceOnImage, markEyesOnImage, markPupilOnImage
 
 class ScreenHandler:
     def __init__(self):
@@ -14,10 +14,10 @@ class ScreenHandler:
         cv.destroyAllWindows()
 
     def markFace(self, image, face):
-        utils.markBoundingBoxOnImage(image, face, self.__faceMarkColor)
+        markFaceOnImage(image, face, self.__faceMarkColor)
 
-    def markEye(self, image, eye):
-        utils.markBoundingBoxOnImage(image, eye, self.__eyeMarkColor)
+    def markEye(self, image, eyesCoords):
+        markEyesOnImage(image, eyesCoords, self.__eyeMarkColor)
 
     def markPupil(self, image, eyeCoords):
-        utils.markPupilOnImage(image, eyeCoords, self.__pupilMarkColor)
+        markPupilOnImage(image, eyeCoords, self.__pupilMarkColor)

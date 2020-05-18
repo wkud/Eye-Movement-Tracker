@@ -1,18 +1,42 @@
-import cv2 as cv
-from math import floor
+import numpy as np
+from dlib import shape_predictor
+from src.utils import shapeToNp
 
 class EyesDetector:
-    def getEyes(self, face):
-        (fx, fy, fw, fh) = face
-        left_c = [int(floor(0.35 * fw)), int(floor(0.4 * fh))]
-        right_c = [int(floor(0.68 * fw)), int(floor(0.4 * fh))]
+    def __init__(self, shape):
+        self.__predictor = shape_predictor(shape)
 
-        size = int(floor(0.10 * fw))
+    def convertFrom12To8(self, eyesCoords):
+        newEyesCoords = np.zeros((8, 2), dtype=int)
+        idxCounter = 0
+        for i in range(0, 12):
+            if i == 1 or i == 4 or i == 7 or i == 10:
+                newEyesCoords[idxCounter] = (eyesCoords[i] + eyesCoords[i + 1]) / 2
+                idxCounter += 1
+            elif i == 2 or i == 5 or i == 8 or i == 11:
+                continue
+            else:
+                newEyesCoords[idxCounter] = eyesCoords[i]
+                idxCounter += 1
+        return newEyesCoords
 
-        left_x, left_y = [left_c[0] - size, left_c[1] - size]
-        right_x, right_y = [right_c[0] - size, right_c[1] - size]
-        area = size * 2
+    def splitEyesArray(self, eyes):
+        return [eyes[0 : 4], eyes[4 : 8]]
 
-        left_eye = (fx + left_x, fy + left_y, area, area)
-        right_eye = (fx + right_x, fy + right_y, area, area)
-        return [left_eye, right_eye]
+    def calcEyeBoundingBox(self, eye):
+        xCoords = []
+        yCoords = []
+        for coord in eye:
+            xCoords.append(coord[0])
+            yCoords.append(coord[1])
+        x = min(xCoords)
+        y = min(yCoords)
+        w = max(xCoords) - x
+        h = max(yCoords) - y
+        return (x, y, w, h)
+
+    def getEyes(self, grayFrame, face):
+        shape = self.__predictor(grayFrame, face)
+        shape = shapeToNp(shape)
+        convertedShape = self.convertFrom12To8(shape[36 : 48])
+        return convertedShape

@@ -1,30 +1,43 @@
 import cv2 as cv
+import argparse as arg
 from src.cameraHandler import CameraHandler
 from src.screenHandler import ScreenHandler
 from src.faceDetector import FaceDetector
 from src.eyesDetector import EyesDetector
 from src.pupilDetector import PupilDetector
+from src.utils import nothing
+
+ap = arg.ArgumentParser()
+ap.add_argument("-p", "--shape-predictor", required=True, help="path to facial landmark predictor")
+args = vars(ap.parse_args())
 
 camera = CameraHandler()
 faceDetector = FaceDetector()
-eyesDetector = EyesDetector()
+eyesDetector = EyesDetector(args['shape_predictor'])
 screen = ScreenHandler()
 pupilDetector = PupilDetector()
+
+cv.namedWindow('frame')
+cv.createTrackbar('threshold', 'frame', 0, 255, nothing)
+cv.setTrackbarPos('threshold', 'frame', 55)
 
 while True:
     image = camera.getFrame()
     grayFrame = camera.frameToGray(image)
-    faces = faceDetector.getFace(grayFrame)
-    if faces != None:
-        for face in faces:
-            screen.markFace(image, face)
-            eyes = eyesDetector.getEyes(face)
-
-            for eye in eyes:
-                screen.markEye(image, eye)
-                eyeRegion, x, y = pupilDetector.findEyeCenter(grayFrame, eye)
-                screen.markPupil(image, (x, y))
-
+    faceRect, faceCoords = faceDetector.getFace(grayFrame)
+    if faceRect is not None:
+        screen.markFace(image, faceCoords)
+        eyesCoords = eyesDetector.getEyes(grayFrame, faceRect)
+        #screen.markEye(image, eyesCoords)
+        if len(eyesCoords) > 0:
+            threshold = cv.getTrackbarPos('threshold', 'frame')
+            eyesArray = eyesDetector.splitEyesArray(eyesCoords)
+            for eye in eyesArray:
+                eyeBox = eyesDetector.calcEyeBoundingBox(eye)
+                pupil = pupilDetector.findEyeCenter(grayFrame, eyeBox, threshold)
+                if pupil is not None:
+                    x, y = pupil
+                    screen.markPupil(image, (int(x), int(y)))
     screen.displayFrame('frame', image)
     key = cv.waitKey(1) & 0xFF
     if key == ord('q'):
@@ -32,18 +45,3 @@ while True:
         
 camera.endRecording()
 screen.closeWindows()
-'''
-
-image = cv.imread('resources/face1.jpeg')
-grayFrame = camera.frameToGray(image)
-faces = faceDetector.getFace(grayFrame)
-screen.markFace(image, faces[0])
-eyes = eyesDetector.getEyes(faces[0])
-
-for eye in eyes:
-    screen.markEye(image, eye)
-    eyeRegion, x, y = pupilDetector.findEyeCenter(grayFrame, eye)
-    screen.markPupil(eyeRegion, (x, y))
-    cv.imshow('face', eyeRegion)
-    cv.waitKey(0)
-'''
