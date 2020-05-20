@@ -1,9 +1,8 @@
-from screeninfo import get_monitors
+import src.utils as utils
 
 class PupilToScreenMapper:
     def __init__(self):
-        monitor = get_monitors()[0]
-        self.screenSize = (monitor.width, monitor.height)
+        self.screenSize = utils.getMonitorSize();
 
     def convertToScreenPosition(self, eyeBox, pupilPos):
         (ex, ey, ew, eh) = eyeBox

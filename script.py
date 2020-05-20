@@ -7,6 +7,7 @@ from src.eyesDetector import EyesDetector
 from src.pupilDetector import PupilDetector
 from src.utils import nothing
 from src.pupilToScreenMapper import PupilToScreenMapper
+from src.heatMapView import HeatMapView
 
 ap = arg.ArgumentParser()
 ap.add_argument("-p", "--shape-predictor", required=True, help="path to facial landmark predictor")
@@ -18,6 +19,7 @@ eyesDetector = EyesDetector(args['shape_predictor'])
 screen = ScreenHandler()
 pupilDetector = PupilDetector()
 mapper = PupilToScreenMapper()
+heatMap = HeatMapView()
 
 cv.namedWindow('frame')
 cv.createTrackbar('threshold', 'frame', 0, 255, nothing)
@@ -40,8 +42,8 @@ while True:
                 if pupil is not None:
                     x, y = pupil
                     screen.markPupil(image, (int(x), int(y)))
-                    screenPupilPosition = mapper.convertToScreenPosition(eyeBox, pupil)
-                    print(screenPupilPosition)
+                    screenPoint = mapper.convertToScreenPosition(eyeBox, pupil)
+                    heatMap.addPoint(screenPoint)
 
     screen.displayFrame('frame', image)
     key = cv.waitKey(1) & 0xFF
