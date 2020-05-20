@@ -1,4 +1,5 @@
 import cv2 as cv
+import numpy as np
 
 def rectToBoundingBox(rect):
     x = rect.left()
@@ -7,25 +8,25 @@ def rectToBoundingBox(rect):
     h = rect.bottom() - y
     return (x, y, w, h)
 
-def markBoundingBoxOnImage(image, box, color):
+def shapeToNp(shape):
+	coords = np.zeros((68, 2), dtype=int)
+	for i in range(0, 68):
+		coords[i] = (shape.part(i).x, shape.part(i).y)
+	return coords
+
+def markFaceOnImage(image, box, color):
     (x, y, w, h) = box
     cv.rectangle(image, (x, y), (x + w, y + h), color, 2)
 
-def sliceImage(image, box):
-    (x, y, width, height) = box
-    return image[y:y+height, x:x+width]
+def markEyesOnImage(image, coords, color):
+    for (x, y) in coords:
+        cv.circle(image, (x, y), 1, color, -1)
 
-def resizeImage(image, targetWidth, targetHeight, keepAspect = False):
-    if keepAspect:
-        (height, width) = image.shape[0:1]
-        scale = targetWidth * 1.0 / width
-        dimensions = (width * scale, height * scale)
-    else:
-        dimensions = (targetWidth, targetHeight)
+def markPupilOnImage(image, eyeCoords, color):
+    cv.circle(image, eyeCoords, 5, color)
 
-    resized = cv.resize(image, dimensions, interpolation=cv.INTER_AREA)
-    return resized
-
+def nothing(x):
+    pass
 
 
 

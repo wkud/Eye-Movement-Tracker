@@ -1,14 +1,12 @@
 import dlib
-import src.utils as utils
+from src.utils import rectToBoundingBox
 
 class FaceDetector:
     def __init__(self):
-        self.__detector = dlib.get_frontal_face_detector()
+       self.__detector = dlib.get_frontal_face_detector()
 
     def getFace(self, grayFrame):
-        faces = self.__detector(grayFrame, 1)
-        if len(faces) == 0:
-            return None
-
-        faceAsBox = utils.rectToBoundingBox(faces[0])
-        return faceAsBox
+        faces = self.__detector(grayFrame, 0)
+        if faces:
+            return faces[0], rectToBoundingBox(faces[0])
+        return None, None
