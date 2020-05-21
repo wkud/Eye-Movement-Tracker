@@ -23,7 +23,7 @@ heatMap = HeatMapView()
 
 cv.namedWindow('frame')
 cv.createTrackbar('threshold', 'frame', 0, 255, nothing)
-cv.setTrackbarPos('threshold', 'frame', 55)
+cv.setTrackbarPos('threshold', 'frame', 70)
 
 while True:
     image = camera.getFrame()
