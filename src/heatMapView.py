@@ -41,7 +41,7 @@ class HeatMapView:
 
         if self.sampleCount % self.FRAMES_PER_IMAGE_UPDATE == 0:  # call update function every self.FRAMES_PER_IMAGE_UPDATE
             self.updateImage()
-            self.newPoints = []  # reset list
+            self.newPoints.clear()  # reset list
 
     def __invokeForEachPixelInCircle(self, centerX, centerY, radius, callback):
         width, height = self.size
@@ -70,6 +70,3 @@ class HeatMapView:
             offsetHeat = heat - self.START_HUE  # offset heat counter by threshold needed to get here
             self.image[y, x, 2] = max(1 - offsetHeat / 250, 0)  # red -> black
             self.image[y, x, 1] = 1  # if heat > 0: saturation = 1
-
-    def getSummaryImage(self):  # create image of every point gathered during runtime
-        pass
