@@ -6,6 +6,8 @@ from src.faceDetector import FaceDetector
 from src.eyesDetector import EyesDetector
 from src.pupilDetector import PupilDetector
 from src.utils import nothing
+from src.pupilToScreenMapper import PupilToScreenMapper
+from src.heatMapView import HeatMapView
 
 ap = arg.ArgumentParser()
 ap.add_argument("-p", "--shape-predictor", required=True, help="path to facial landmark predictor")
@@ -16,10 +18,12 @@ faceDetector = FaceDetector()
 eyesDetector = EyesDetector(args['shape_predictor'])
 screen = ScreenHandler()
 pupilDetector = PupilDetector()
+mapper = PupilToScreenMapper()
+heatMap = HeatMapView()
 
 cv.namedWindow('frame')
 cv.createTrackbar('threshold', 'frame', 0, 255, nothing)
-cv.setTrackbarPos('threshold', 'frame', 55)
+cv.setTrackbarPos('threshold', 'frame', 70)
 
 while True:
     image = camera.getFrame()
@@ -28,7 +32,7 @@ while True:
     if faceRect is not None:
         screen.markFace(image, faceCoords)
         eyesCoords = eyesDetector.getEyes(grayFrame, faceRect)
-        #screen.markEye(image, eyesCoords)
+        screen.markEye(image, eyesCoords)
         if len(eyesCoords) > 0:
             threshold = cv.getTrackbarPos('threshold', 'frame')
             eyesArray = eyesDetector.splitEyesArray(eyesCoords)
@@ -38,6 +42,9 @@ while True:
                 if pupil is not None:
                     x, y = pupil
                     screen.markPupil(image, (int(x), int(y)))
+                    screenPoint = mapper.convertToScreenPosition(eyeBox, pupil)
+                    heatMap.addPoint(screenPoint)
+
     screen.displayFrame('frame', image)
     key = cv.waitKey(1) & 0xFF
     if key == ord('q'):

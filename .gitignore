@@ -2,3 +2,4 @@
 venv
 ..gitignore.swp
 src/__pycache__/
+resources/shape_predictor_68_face_landmarks.dat

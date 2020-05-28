@@ -14,6 +14,7 @@ class PupilDetector:
         img = cv.erode(img, None, iterations=2)
         img = cv.dilate(img, None, iterations=4)
         img = cv.medianBlur(img, 5)
+        cv.imshow('img', img)
         keypoints = self.detector.detect(img)
         if len(keypoints) > 0:
             x, y = keypoints[0].pt

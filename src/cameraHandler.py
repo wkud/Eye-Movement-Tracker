@@ -12,7 +12,8 @@ class CameraHandler:
 
     def getFrame(self):
         ret, frame = self._cam.read()
-        return frame
+        frameFlippedHorizontal = cv.flip(frame, 1)
+        return frameFlippedHorizontal
 
     def getLowResolutionFrame(self):
         ret, frame = self._cam.read()

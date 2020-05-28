@@ -1,5 +1,6 @@
 import cv2 as cv
 import numpy as np
+from screeninfo import get_monitors
 
 def rectToBoundingBox(rect):
     x = rect.left()
@@ -27,6 +28,10 @@ def markPupilOnImage(image, eyeCoords, color):
 
 def nothing(x):
     pass
+
+def getMonitorSize():
+    monitor = get_monitors()[0]
+    return (monitor.width, monitor.height)
 
 
 
